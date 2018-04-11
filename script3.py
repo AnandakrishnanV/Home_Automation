@@ -2,19 +2,18 @@ import requests
 import json
 import time
 import RPi.GPIO as GPIO
-from gateops import gate_open, gate_close
+from gateopsbak import gate_open, gate_close
 #from ledops import led_on, led_off
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
-
+GPIO.setup(16, GPIO.OUT)
 GPIO.setup(19, GPIO.OUT)
 
 flag_gate = 0
 flag_blinds = 0
 flag_textsms = 0
 flag_water = 0
-flag_textsms = 0
 
 def led_on():
 #    GPIO.setup(19, GPIO.OUT)
@@ -26,7 +25,7 @@ def led_off():
 
 
 def make_request(tag):
-    global flag_textsms
+    global flag_textsms 
     url_link = "https://dweet.io/get/latest/dweet/for/{}".format(tag)
     r = requests.get(url_link)
     output = json.loads(r.content)
@@ -34,7 +33,7 @@ def make_request(tag):
         msg = output['with'][0]['content']['content'].split()
         for i in range(len(msg)):
             if 'approx' not in msg:
-                return 0
+                return
             if msg[i] == 'approx':
                 delay = int(msg[i+1])
                 flag_textsms = 1
@@ -44,7 +43,7 @@ def make_request(tag):
     return output['with'][0]['content']['status']
 
 def gate_execute(input_flag):
-    global flag_gate 
+    global flag_gate
     if flag_gate == input_flag:
         return
     if input_flag == 0:
@@ -58,6 +57,7 @@ def gate_execute(input_flag):
        
         
 def blinder_execute(input_flag):
+    global flag_binds
     if flag_blinds == input_flag:
         return
     if input_flag == 0:
@@ -68,7 +68,7 @@ def blinder_execute(input_flag):
         print 'halfway'
 
 def textsms_execute(delay):
-    global flag_textsms
+    global textsms
     if flag_gate == 1:
         return
     if flag_textsms == 1:
@@ -100,7 +100,7 @@ while True:
        delay = make_request('nova_textsms')
        textsms_execute(delay)
        b = make_request('nova_water')
-       print "SPRINKLER STATUS ",b
+       print "Sprinkler", b
        water_execute(b)
        time.sleep(0.05)
        
