@@ -1,3 +1,6 @@
+import RPi.GPIO as GPIO
+import time
+GPIO.setmode(GPIO.BOARD)
 
 def gate_open():
     p = GPIO.PWM(16, 50)
@@ -7,7 +10,7 @@ def gate_open():
     p.ChangeDutyCycle(2.5)  
     time.sleep(1)
     p.stop()
-    GPIO.cleanup()
+#    GPIO.cleanup()
     
 def gate_close():
     p = GPIO.PWM(16, 50)
@@ -17,7 +20,7 @@ def gate_close():
     p.ChangeDutyCycle(7.5)  
     time.sleep(1)
     p.stop()
-    GPIO.cleanup()
+#    GPIO.cleanup()
 
 
     
