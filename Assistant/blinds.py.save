@@ -1,0 +1,53 @@
+import RPi.GPIO as GPIO
+import requests
+import json
+import time
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(16, GPIO.OUT)
+GPIO.setup(7, GPIO.OUT) 
+GPIO.setup(11, GPIO.OUT) 
+GPIO.setup(12, GPIO.OUT)
+
+def blinds_stop():
+
+
+def blinds_open():
+	blinds_stop()
+	pwm=GPIO.PWM(07, 100)
+	pwm.ChangeDutyCycle(50)
+	GPIO.output(7, GPIO.HIGH)
+	GPIO.output(12, GPIO.LOW)
+	GPIO.output(11, GPIO.HIGH)
+	
+
+def gate_off():
+	p = GPIO.PWM(16, 50)
+	p.start(7.5)
+	p.ChangeDutyCycle(7.5)
+	time.sleep(1)
+	p.stop()
+
+
+url = "https://dweet.io/get/latest/dweet/for/nova_blinds"
+
+def get_status():
+        r = requests.get(url)
+        output = json.loads(r.content)
+        if output['this'] == 'failed':
+                return 'failed'
+        return output['with'][0]['content']['status']
+
+while True:
+        status = get_status()
+        if status == 'failed':
+                print "No request"
+                continue
+        if status == 1:
+                gate_open()
+                print "Gate on"
+        else:
+                gate_off()
+                print "Gate off"
+        time.sleep(0.5)
