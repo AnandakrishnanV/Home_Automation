@@ -33,5 +33,5 @@ while True:
 	else:
 		sprinkler_off()
 		print "Sprinkler off"
-	time.sleep(0.5)
+	time.sleep(0.2)
 

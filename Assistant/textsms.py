@@ -22,25 +22,34 @@ def gate_off():
 	p.stop()
 
 
-url = "https://dweet.io/get/latest/dweet/for/nova_gate"
+url = "https://dweet.io/get/latest/dweet/for/nova_textsms"
 
 def get_status():
         r = requests.get(url)
         output = json.loads(r.content)
         if output['this'] == 'failed':
                 return 'failed'
-        return output['with'][0]['content']['status']
+        msg = output['with'][0]['content']['content'].split()
+        for i in range(len(msg)):
+            if 'approx' not in msg:
+                return 0
+            if msg[i] == 'approx':
+                delay = int(msg[i+1])
+                flag_textsms = 1
+                # change control flag of gate (open gate)
+                print "Delay : ",delay
+                return delay
+
 
 while True:
-        status = get_status()
-        if status == 'failed':
+        delay = get_status()
+        if delay == 'failed':
                 print "No request"
                 continue
-        if status == 1:
-                gate_open()
-                print "Gate Open"
+	elif delay == 0:
+		continue
         else:
-                gate_off()
-                print "Gate Close"
+		time.sleep(delay)
+		gate_open()
         time.sleep(0.2)
 
