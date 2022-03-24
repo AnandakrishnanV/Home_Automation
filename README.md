@@ -1,2 +1,1 @@
-# Gate-Control
-[Stepper Motor] (https://www.rototron.info/raspberry-pi-stepper-motor-tutorial/)
+Home Automation System with IoT and Voice Assistants: We developed a home automation system compatible with both Alexa and Google Home (DialogFlow) on a Raspberry Pi(Python) as part of the Cognizant EAS DTO Hackathon. First Place achieved.
